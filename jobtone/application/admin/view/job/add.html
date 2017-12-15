@@ -1,0 +1,219 @@
+{layout name="layout" /}
+<link href="__PLUGINS__/summernote/summernote.min.css" rel="stylesheet">
+<script src="__PLUGINS__/summernote/summernote.min.js"></script>
+<script src="https://cdn.bootcss.com/summernote/0.8.3/lang/summernote-zh-CN.min.js"></script>
+<script src="__PLUGINS__/bootstrap-select/bootstrap-select.min.js"></script>
+<link href="__PLUGINS__/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+<script src="__PLUGINS__/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+<link href="__PLUGINS__/bootstrap-tagsinput/bootstrap-tagsinput.min.css" rel="stylesheet">
+
+
+<div class="row">
+	<div class="col-xs-12 col-md-8 col-lg-10">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">岗位修改</h3>
+			</div>
+			<div class="panel-body">								
+				<form class="form-horizontal form-padding">
+					<div class="form-group">
+						<label class="col-md-3 control-label">岗位名称</label>
+						<div class="col-md-9">
+							<input type="text" id="title" class="form-control" value="{$info.title|default=''}">
+							<small class="help-block"></small>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">岗位分类</label>
+						<div class="col-md-9">
+							<select id="category" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								{volist name="category" id="v"}
+									<option value="{$v.id}" disabled>{$v.name}</option>
+									{volist name="v.son" id="vs"}
+										<option value="{$vs.id}" {notempty name="info"}{eq name="info.category" value="$vs.id"}selected="selected"{/eq}{/notempty}>|--{$vs.name}</option>
+									{/volist}
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">性别要求</label>
+						<div class="col-md-9">
+							<select id="sex" class="form-control select2-hidden-accessible" >
+								{volist name='sex' id='v'}
+								<option value="{$v.value}" {notempty name="info"}{eq name="info.sex" value="$v.value"}selected="selected"{/eq}{/notempty}>{$v.zh}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">婚育要求</label>
+						<div class="col-md-9">
+							<select id="marry" class="form-control select2-hidden-accessible" >
+								{volist name='marry' id='v'}
+								<option value="{$v.value}"  {notempty name="info"}{eq name="info.marry" value="$v.value"}selected="selected"{/eq}{/notempty}>{$v.zh}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">学历要求</label>
+						<div class="col-md-9">
+							<select id="edu" class="form-control select2-hidden-accessible" >
+								{volist name='edu' id='v'}
+								<option value="{$v.value}"  {notempty name="info"}{eq name="info.edu" value="$v.value"}selected="selected"{/eq}{/notempty}>{$v.zh}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">工作经验</label>
+						<div class="col-md-9">
+							<select id="workage" class="form-control select2-hidden-accessible" >
+								{volist name='workage' id='v'}
+								<option value="{$v.value}"  {notempty name="info"}{eq name="info.workage" value="$v.value"}selected="selected"{/eq}{/notempty}>{$v.zh}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">工作时间</label>
+						<div class="col-md-9">
+							<select id="worktime" class="form-control select2-hidden-accessible" >
+								{volist name='worktime' id='v'}
+								<option value="{$v.value}"  {notempty name="info"}{eq name="info.worktime" value="$v.value"}selected="selected"{/eq}{/notempty}>{$v.zh}</option>
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">联系电话</label>
+						<div class="col-md-9">
+							<input type="text" id="tel" class="form-control" value="{$info.tel}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">简历投递邮箱</label>
+						<div class="col-md-9">
+							<input type="text" id="email" class="form-control" value="{$info.email}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label">工作地点</label>
+						<div class="col-lg-3">
+							<select id="prov" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								{volist name="prov" id="v"}
+									<option value="{$v.id}"  {notempty name="info"}{eq name="v.id" value="$info.prov"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+								{/volist}
+							</select>
+						</div>
+						<div class="col-lg-3">
+							<select id="city" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								{volist name="city" id="v"}
+									<option value="{$v.id}"  {notempty name="info"}{eq name="v.id" value="$info.city"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+								{/volist}							
+							</select>
+						</div>
+						<div class="col-lg-3">
+							<select id="area" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								{volist name="area" id="v"}
+									<option value="{$v.id}" {notempty name="info"}{eq name="v.id" value="$info.area"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+								{/volist}								
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3 control-label">工作详细地址</label>
+						<div class="col-md-9">
+							<input type="text" id="address" class="form-control" value="{$info.address}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">工资待遇</label>
+						<div class="col-md-9">
+							<input type="text" id="pay" class="form-control" value="{$info.pay}">
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-lg-3 control-label">岗位介绍</label>
+						<div class="col-lg-9">
+							<div id="textbox">{$info.intro}</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-7 col-lg-offset-3">
+							<input type="hidden" id="id" value="{$info.id|default='0'}"/>
+							<button type="button" class="btn btn-primary" id="submit">提交</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>					
+
+<script type="text/javascript">
+$('#textbox').summernote({
+    height : '500px',
+    width:'100%',
+    lang: 'zh-CN',
+    toolbar:''
+});
+
+$('#submit').click(function(){
+	$.post("{:url('job/add')}",{
+		title:$('#title').val(),
+		category:$('#category').val(),
+		tel:$('#tel').val(),
+		email:$('#email').val(),
+		address:$('#address').val(),
+		prov:$('#prov').val(),
+		city:$('#city').val(),
+		area:$('#area').val(),
+		sex:$('#sex').val(),
+		marry:$('#marry').val(),
+		workage:$('#workage').val(),
+		worktime:$('#worktime').val(),
+		edu:$('#edu').val(),
+		intro:$('#textbox').summernote('code'),
+		id:$('#id').val()
+	},function(data){
+		if(data.status==1){
+			layer.msg(data.msg,function(){
+				location.href="{:url('job/index')}"
+			})
+		}else{
+			layer.msg(data.msg)
+		}
+	});
+})
+
+	$('#prov').change(function(){
+		var that=$(this);
+		var prov=that.val();
+		$.post("{:url('user/getCityArray')}",{id:prov},function(data){
+			var html=template('option-temp',data);
+			$('#city').html(html).trigger("change");
+		})
+	})
+	$('#city').change(function(){
+		var that=$(this);
+		var prov=that.val();
+		$.post("{:url('user/getCityArray')}",{id:prov},function(data){
+			var html=template('option-temp',data);
+			$('#area').html(html).trigger("change");
+		})
+	})
+</script>
+<script id="option-temp" type="html/text">
+	<option value="0">整个区域</option>
+	{{each msg as v}}
+		<option value="{{v.id}}">{{v.name}}</option>
+	{{/each}}
+</script>

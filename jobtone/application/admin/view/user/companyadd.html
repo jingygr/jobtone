@@ -1,0 +1,197 @@
+{layout name="layout" /}
+<link href="__PLUGINS__/summernote/summernote.min.css" rel="stylesheet">
+<script src="__PLUGINS__/summernote/summernote.min.js"></script>
+<script src="https://cdn.bootcss.com/summernote/0.8.3/lang/summernote-zh-CN.min.js"></script>
+<script src="__PLUGINS__/bootstrap-select/bootstrap-select.min.js"></script>
+<link href="__PLUGINS__/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+<script src="__PLUGINS__/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+<link href="__PLUGINS__/bootstrap-tagsinput/bootstrap-tagsinput.min.css" rel="stylesheet">
+
+
+<div class="row">
+	<div class="col-xs-12 col-md-8 col-lg-6">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">公司基本资料修改</h3>
+			</div>
+			<div class="panel-body">								
+				<form class="form-horizontal form-padding">
+					<div class="form-group">
+						<label class="col-md-3 control-label">公司名称</label>
+						<div class="col-md-9">
+							<input type="text" id="name" class="form-control" value="{$info.name|default=''}">
+							<small class="help-block"></small>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">公司行业</label>
+						<div class="col-md-9">
+							<select id="industry" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								{volist name="industry" id="v"}
+									<option value="{$v.id}" {notempty name="info"}{eq name="info.industry" value="$v.id"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+									{volist name="v.son" id="vs"}
+										<option value="{$vs.id}">|--{$vs.name}</option>
+									{/volist}
+								{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">联系人</label>
+						<div class="col-md-9">
+							<input type="text" id="contact" class="form-control" value="{$info.contact}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">联系电话</label>
+						<div class="col-md-9">
+							<input type="text" id="tel" class="form-control" value="{$info.tel}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">联系邮箱</label>
+						<div class="col-md-9">
+							<input type="text" id="email" class="form-control" value="{$info.email}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">联系QQ</label>
+						<div class="col-md-9">
+							<input type="text" id="qq" class="form-control" value="{$info.qq}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">公司网址：</label>
+						<div class="col-md-9">
+							<input type="text" id="url" class="form-control" value="{$info.url}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">所在省份</label>
+						<div class="col-md-9">
+							<select id="prov" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+									{volist name="prov" id="v"}
+										<option value="{$v.id}"  {notempty name="info"}{eq name="v.id" value="$info.prov"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+									{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">所在城市</label>
+						<div class="col-md-9">
+							<select id="city" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								<div id="option-city"></div>							
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">所在县或街道</label>
+						<div class="col-md-9">
+							<select id="area" class="form-control select2-hidden-accessible" >
+								<option value="0">请选择</option>
+								<div id="option-area"></div>								
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">详细地址</label>
+						<div class="col-md-9">
+							<input type="text" id="address" class="form-control" value="{$info.address}">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">经营品牌</label>
+						<div class="col-md-9">
+							<input type="text" value="{$info.brand}" placeholder="多个品牌用回车键隔开" class="form-control input-lg" id="brand" data-role="tagsinput">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-lg-3 control-label">企业简介</label>
+						<div class="col-lg-9">
+							<div id="textbox">{$info.info}</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">指定代理商</label>
+						<div class="col-md-9">
+							<select id="proxy" class="form-control select2-hidden-accessible" >
+								<option value="0">无人代理</option>
+									{volist name="proxy" id="v"}
+										<option value="{$v.uid}"  {notempty name="info"}{eq name="v.uid" value="$info.proxy"}selected="selected"{/eq}{/notempty}>{$v.name}</option>
+									{/volist}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-7 col-lg-offset-3">
+							<input type="hidden" id="id" value="{$info.id|default='0'}"/>
+							<button type="button" class="btn btn-primary" id="submit">提交</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>					
+
+<script type="text/javascript">
+$('#textbox').summernote({
+    height : '500px',
+    width:'100%',
+    lang: 'zh-CN',
+    toolbar:''
+});
+
+$('#submit').click(function(){
+	$.post("{:url('user/companyadd')}",{
+		name:$('#name').val(),
+		industry:$('#industry').val(),
+		brand:$('#brand').val(),
+		contact:$('#contact').val(),
+		tel:$('#tel').val(),
+		qq:$('#qq').val(),
+		email:$('#email').val(),
+		address:$('#address').val(),
+		prov:$('#prov').val(),
+		city:$('#city').val(),
+		area:$('#area').val(),
+		proxy:$('#proxy').val(),
+		info:$('#textbox').summernote('code'),
+		id:$('#id').val()
+	},function(data){
+		if(data.status==1){
+			layer.msg(data.msg,function(){
+				location.href="{:url('user/company')}"
+			})
+		}else{
+			layer.msg(data.msg)
+		}
+	});
+})
+
+	$('#prov').change(function(){
+		var that=$(this);
+		var prov=that.val();
+		$.post("{:url('user/getCityArray')}",{id:prov},function(data){
+			var html=template('option-temp',data);
+			$('#city').html(html).trigger("change");
+		})
+	})
+	$('#city').change(function(){
+		var that=$(this);
+		var prov=that.val();
+		$.post("{:url('user/getCityArray')}",{id:prov},function(data){
+			var html=template('option-temp',data);
+			$('#area').html(html).trigger("change");
+		})
+	})
+</script>
+<script id="option-temp" type="html/text">
+	<option value="0">整个区域</option>
+	{{each msg as v}}
+		<option value="{{v.id}}">{{v.name}}</option>
+	{{/each}}
+</script>

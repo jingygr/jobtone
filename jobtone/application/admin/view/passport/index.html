@@ -1,0 +1,362 @@
+{layout name="layout" /}
+    <style>
+		html,body{ 
+			margin:0px; 
+			height:100%; 
+			-webkit-overflow-scrolling: touch;
+			overflow: hidden;
+			overflow-y: hidden;
+		}
+		.panel-footer i{
+			padding: 6px;
+		}
+		.bg-blue{
+			 background:-webkit-gradient(linear, 0% 0%, 50% 0%,from(#6f76fb), to(#719ffe));
+			 /* border-radius: 10px; */
+			 color:#fff;
+		}
+		span.emotion{width:60px; height:20px; overflow:hidden; background:url(icon.gif) no-repeat 2px 2px; padding-left:20px; cursor:pointer;}
+		span.emotion:hover{background-position:2px -28px;/*注意hover此属性在ie 6浏览器下是无效的*/}
+		.qqFace{margin-top:4px;padding:2px;}
+	</style>
+	
+<div class="panel" style="height:100%;background-color:#f3f3f3">
+	<!--Heading-->
+	<div class=" bg-blue pad-all" style="height:20%">
+		<div class="row">
+			<div class="col-xs-6">出发日期：<span id="header-date">2017-06-07</span></div>
+			<div class="col-xs-3" >人数：<span id="header-nums">3</span></div>
+			<div class="col-xs-3 text-2x"><span style="font-size:14px">¥</span><span  id="header-price">500</span></div>
+		</div>
+		<div class="row" style="top:4em;">
+			<div class="col-xs-9">
+			<textarea disabled id="header-note" rows="3" class="form-control" placeholder="备注.."></textarea>
+			</div>
+			<div class="col-xs-3">
+				<span id="header-order" class="icon-wrap icon-wrap-sm icon-circle pad-all text-center bg-success widget-img img-circle img-border-light "  style="top:2em;z-index:999;line-height:2.5em">
+					下单
+				</span>
+			</div>
+		</div>		
+	</div>	
+
+	<!--Widget body-->
+	<div id="chatlistbox"  style="height:71%">
+		<div class="nano">
+			<div class="nano-content pad-all">
+				<ul class="list-unstyled media-block" id="duihuadiv">
+					<li class="mar-btm">
+						<div class="media-left">
+							<img src="__IMAGES__/yzlogo.jpg" class="img-circle img-sm" alt="Profile Picture">
+						</div>
+						<div class="media-body pad-hor">
+							<div class="myspeech">
+								<p>Hi，{$userinfo.nickname}！欢迎你来参加这个活动，对于这个活动有什么问题，都可以心情的问我哦~</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--Widget footer-->
+		<div class="panel-footer duihua-footer" style="position:fixed;bottom:0;width:100%;">
+			<div class="row">
+				<!-- <div class="col-xs-1 pad-no" style="transform:rotate(90deg);">
+					<i class="icon-circle ion-wifi icon-lg icon-2x"></i>
+				</div> -->
+				<div class="col-xs-10 pad-no">				
+					<input id="content" type="text" placeholder="请输入您的问题" class="form-control bord-no input-lg">
+				</div>
+				<div class="noinput">
+				<div class="col-xs-1 pad-no" style="font-size:1.2em">
+					<i class="icon-circle ion-happy-outline icon-lg icon-2x"></i>
+				</div>
+				<div class="col-xs-1 pad-no" style="font-size:1.2em">
+					<i class="icon-circle ion-plus-circled icon-lg icon-2x mar-ver"></i>
+				</div>
+				</div>
+				<div class="oninput" style="display:none">
+					<div class="col-xs-2">
+						<button class="btn btn-primary btn-block submit" type="submit">发送</button>
+					</div>
+				</div>
+			</div>
+			<div class="row pad-all" id="footer2" style="display:none">
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var uid="{$userinfo.phone}";
+var name="{$userinfo.nickname}";
+var headimg="{$userinfo.headimgurl}";
+ws = new WebSocket("ws://chat.xiehouu.com:2346");
+ws.onopen = function() {
+	console.log('向服务器端发送UID:'+uid);
+    ws.send(uid);
+};
+ws.onmessage = function(e) {
+    console.log(e.data);
+    var html=template('sysMsg',e.data);
+    $("#duihuadiv").append(html);
+};
+
+
+$('#duihuadiv').delegate(".date li","click",function(){
+	$('.date li').removeClass('bg-success');
+	$(this).addClass('bg-success');
+	var datas={
+		msg:'您选择的出发日期为<span class="text-info  mar-hor">'+$(this).attr('data-date')+'</span>'
+	}
+	var html=template('sysMsg',datas);
+	$("#duihuadiv").append(html);
+	$('#header-date').text($(this).attr('data-date'));
+	console.log($(this).attr('data-date'));
+	
+})
+
+$('#duihuadiv').delegate(".num span","click",function(){
+	$('.num span').removeClass('btn-success').addClass('btn-default');	
+	$(this).addClass('btn-success');
+	$('.num input').val('');
+	$('.num button').css('display','none');
+	var datas={
+			msg:'您的出行人数为<span class="text-info  mar-hor">'+$(this).text()+'</span>人'
+	}
+	var html=template('sysMsg',datas);
+	$("#duihuadiv").append(html);
+	$('#header-nums').text($(this).text());
+	console.log($(this).text())
+})
+
+$('#duihuadiv').delegate(".num input","change",function(){
+	var num=$(this).val();
+	if(num>0){
+		$('.num span').removeClass('btn-success').addClass('btn-default');	
+		$('.num button').css('display','block');
+	}
+})
+
+$('#duihuadiv').delegate(".num button","click",function(){
+	var num=$('.num input:last').val();
+	var datas={
+			msg:'您的出行人数为<span class="text-info mar-hor">'+num+'</span>人'
+	}
+	var html=template('sysMsg',datas);
+	$("#duihuadiv").append(html);
+	$('#header-nums').text(num);
+	console.log(num)
+})
+
+//开始底部功能键功能的实现
+$('#footer2').delegate(".funcs","click",function(){
+	postmsg($(this).attr('data-type'),5)
+})
+$('#duihuadiv').click(function(){
+	$('.duihua-footer').css('height','5em');
+	$('#footer2').css('display','none');
+})
+$('.oninput .submit').click(function(){
+	var txt=$('#content').val();
+	var datas = {
+    	    msg:replace_em(txt)
+    	};
+	var html=template('sendMsgText',datas);
+	$("#duihuadiv").append(html);
+	$('.panel-footer input').val('');
+	$('.noinput').css('display','block');
+	$('.oninput').css('display','none');
+	ws.send(replace_em(txt));
+})
+$('.ion-plus-circled').click(function(){
+	var bottomHeight=parseInt($('.duihua-footer').css('bottom'));
+	if(bottomHeight<6){
+		$('.duihua-footer').css('bottom','0').css('height','15em');		
+		html = template('footerFun-temp',1);
+		$('#footer2').css('display','block').html(html);		
+	}else{
+		$('.duihua-footer').css('bottom','0').css('height','5em');
+		$('#footer2').css('display','none');
+	}
+})
+
+$('#content').change(function(){
+	$('.duihua-footer').css('bottom','0').css('height','6em');
+	var txt=$('#content').val();
+	if(txt.length>0){
+		$('.noinput').css('display','none');
+		$('.oninput').css('display','block')
+	}else{
+		$('.noinput').css('display','block');
+		$('.oninput').css('display','none')
+	}
+});
+
+$('.ion-happy-outline').qqFace({
+	// id : 'facebox', //表情盒子的ID
+	assign:'content', //给那个控件赋值
+	path:'__PLUS__/qqface/face/'//表情存放的路径
+});
+
+function replace_em(str){
+	str = str.replace(/\</g,'&lt;');
+	str = str.replace(/\>/g,'&gt;');
+	str = str.replace(/\n/g,'<br/>');
+	str = str.replace(/\[em_([0-9]*)\]/g,'<img src="__PLUS__/qqface/face/$1.gif" border="0" />');
+	return str;
+}
+
+</script>
+
+
+
+<script id="footerFun-temp" type="html/text">
+<ul class="list-unstyled row text-center">
+	<li class="col-xs-3 mar-btm funcs" data-type="date">
+		<p class="ion-calendar icon-2x"></p>日期
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="num">
+		<p class="ion-stats-bars icon-2x"></p>数量
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="ckorder">
+		<p class="ion-clipboard icon-2x"></p>确定订单
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="sos">
+		<p class="ion-help-buoy icon-2x"></p>SOS
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="weather">
+		<p class="ion-ios-sunny-outline icon-2x"></p>天气
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="nav">
+		<p class="ion-ios-location icon-2x"></p>导航
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="contacts">
+		<p class="ion-ios-people icon-2x"></p>通讯录
+	</li>
+	<li class="col-xs-3 mar-btm funcs" data-type="voice">
+		<p class="ion-ios-mic icon-2x"></p>语音聊天
+	</li>
+</ul>
+</script>
+<!-- 文字接收模板 -->
+<script id="getMsgText" type="text/html">
+<li class="mar-btm">
+	<div class="media-left">
+		<img src="{{headimg}}" class="img-circle img-sm" alt="Profile Picture">
+	</div>
+	<div class="media-body pad-hor">
+		<div class="myspeech">
+			{{ if msg_type==1 }}
+				<p>{{=msg_info}}</p>
+			{{ /if }}
+		</div>
+	</div>
+</li>
+</script>
+<!-- 文字发送模板 -->
+<script id="sendMsgText" type="text/html">
+	<li class="mar-btm">
+		<div class="media-right">
+			<img src="{$userinfo.headimgurl}" class="img-circle img-sm" alt="Profile Picture">
+		</div>
+		<div class="media-body pad-hor myspeech-right">
+			<div class="speech">
+				{{=msg}}
+			</div>
+		</div>
+	</li>
+</script>
+<!-- 文字发送模板2用于第一次接收自己的信息的 -->
+<script id="sendMsgText1" type="text/html">
+	<li class="mar-btm">
+		<div class="media-right">
+			<img src="{{headimg}}" class="img-circle img-sm" alt="Profile Picture">
+		</div>
+		<div class="media-body pad-hor myspeech-right">
+			<div class="speech">
+				{{=msg_info}}
+			</div>
+		</div>
+	</li>
+</script>
+<script id="getDateMsg" type="text/html">
+<li class="mar-btm">
+	<div class="media-left">
+		<img src="{{headimg}}" class="img-circle img-sm" alt="Profile Picture">
+	</div>
+	<div class="media-body pad-hor">
+		<div class="myspeech" style="padding:0.2em">
+			<div class="panel bord-no" style="width:20em;">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						可选出发日期：
+					</h3>
+				</div>
+				<div class="panel-body">
+					<ul class="list-group bord-no date">
+						{{each msg_infos as v}}
+						<li class="list-group-item row bg-gray-light mar-top" data-date="{{v.info.day}}" data-id="{{v.id}}">
+							<div class="col-xs-5">{{v.info.day}}</div>
+							<div class="col-xs-3">{{v.info.week}}</div>
+							<div class="col-xs-4">{{v.info.nums}}/50</div>
+						</li>
+						{{/each}}
+					</ul>
+				</div>
+				<div class="panel-footer">
+					请点击你想要的出发日期
+				</div>
+			</div>
+		</div>
+	</div>
+</li>
+</script>
+
+<script id="getNumMsg" type="text/html">
+<li class="mar-btm">
+	<div class="media-left">
+		<img src="{{headimg}}" class="img-circle img-sm" alt="Profile Picture">
+	</div>
+	<div class="media-body pad-hor">
+		<div class="myspeech" style="padding:0.2em">
+			<div class="panel bord-no num" style="width:20em;">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						订购人数：
+					</h3>
+				</div>
+				<div class="panel-body ">
+					<span class="btn btn-default btn-icon mar-all pad-all">1</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">2</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">3</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">4</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">5</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">6</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">7</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">8</span>
+					<span class="btn btn-default btn-icon mar-all pad-all">9</span>
+				</div>
+				<div class="panel-footer">
+					<div class="row">
+					<div class="col-xs-9">				
+						<input type="number" placeholder="超过9个请在此输入" class="form-control input-lg  bord-no" >
+					</div>
+					<div class="col-xs-2">
+						<button class="btn btn-success" type="submit" style="display:none">确定</button>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>
+</script>
+<!-- 系统信息模板 -->
+<script id="sysMsg" type="text/html">
+<li class="mar-btm text-center " style="padding-top:1em;padding-bottom:1em;"><span class="bg-gray  pad-all mar-all ">{{=msg}}</span></li>
+</script>
+<script id="sysMsg1" type="text/html">
+<li class="mar-btm text-center " style="padding-top:1em;padding-bottom:1em;"><span class="bg-gray  pad-all mar-all ">{{=msg_info}}</span></li>
+</script>

@@ -1,0 +1,182 @@
+{layout name="layout"}
+<link href="__PLUGINS__/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+<script src="__PLUGINS__/bootstrap-select/bootstrap-select.min.js"></script>
+<div class="row">
+	<div class="col-xs-12 col-md-12 col-lg-6">
+		<div class="panel">
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table ">
+						<thead>
+							<tr>
+								<th>分类名称</th>	
+								<th class="text-center">操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							{volist name="category" id="v"}
+								<tr id="tr{$v.id}" class="list-group-item-default">
+									<td>{$v.name}</td>											
+									<td class="text-center">
+										<a class="btn btn-warning edit" href="{:url('system/category',['id'=>$v.id])}"><i class="ion-edit icon-fw"></i>修改</a>
+										<button class="btn btn-danger del" data-id="{$v.id}"><i class="ion-close-round icon-fw"></i>删除</button>
+									</td>
+								</tr>
+								{notempty name="v.son"}
+									{volist name="v.son" id="vs"}
+										<tr id="tr{$vs.id}">
+											<td style="padding-left:2em;">├─{$vs.name}</td>
+											<td class="text-center">
+												<a class="btn btn-warning" href="{:url('system/category',['id'=>$vs.id])}" ><i class="ion-edit icon-fw"></i>修改</a>
+												<button class="btn btn-danger del" data-id="{$vs.id}"><i class="ion-close-round icon-fw"></i>删除</button>
+											</td>
+										</tr>
+									{/volist}
+								{/notempty}
+							{/volist}										
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+	<div class="col-xs-12 col-md-12 col-lg-6">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">分类添加/修改</h3>
+			</div>
+			<div class="panel-body">					
+				<form class="panel-body form-horizontal form-padding">
+					<div class="form-group row pad-btm">
+						<label class="col-lg-2 control-label">上级频道</label>
+						<div class="col-lg-10">
+							<select class="selectpicker" id="fid" style="width:100%;">
+								<option value="0">一级频道</option>
+								{volist name="category" id="v"}
+								<option value="{$v.id}" {notempty name="info"}{eq name="info.fid" value="$v.id"}selected{/eq}{/notempty}>{$v.name}</option>
+								{/volist}
+							</select>
+						</div>								
+					</div>
+					<div class="form-group row pad-btm">
+						<label class="col-lg-2 control-label">频道图标</label>
+						<div class="col-lg-10">
+							<div class="input-group">
+								<input type="text"  value="{$info.icon|default=''}"  placeholder="该频道的图标，点击右边的放大镜进行选择" class="form-control input-lg" id="icon" disabled>
+								<span class="input-group-addon" id="upimg">
+									<i class="ion-search"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row pad-btm">
+						<label class="col-lg-2 control-label">频道名称</label>
+						<div class="col-lg-10">
+							<input type="text"  value="{$info.name|default=''}"  placeholder="频道名称" class="form-control input-lg" id="name">
+						</div>								
+					</div>
+					<div class="form-group row pad-btm">
+						<label class="col-lg-2 control-label">关键字</label>
+						<div class="col-lg-10">
+							<input type="text"  value="{$info.keywords|default=''}"  placeholder="seo之一，频道关键词" class="form-control input-lg" id="keywords">
+						</div>								
+					</div>
+					<div class="form-group row pad-btm">
+						<label class="col-lg-2 control-label">频道描述</label>
+						<div class="col-lg-10">
+							<input type="text"  value="{$info.description|default=''}"  placeholder="seo之一，频道描述" class="form-control input-lg" id="description">
+						</div>								
+					</div>
+					<div class="form-group">
+						<div class="col-lg-7 col-lg-offset-3">
+							<input type="hidden" id="id" value="{$info.id|default='0'}"/>
+							<button type="button" class="btn btn-primary" id="submit">提交</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+	
+<script>
+	$('.del').click(function(){		
+		var id=$(this).attr('data-id');
+		$.post("{:url('system/categoryDel')}",{id:id},function(data){
+			if(data.status==1){
+				layer.alert(data.msg,function(){
+					$('#tr'+id).remove();
+					layer.closeAll();
+				});				
+			}else{
+				layer.msg(data.msg);
+			}
+		})
+	})
+	$('#submit').click(function(){
+		var id=$('#id').val();
+		var fid=$('#fid').val();
+		var icon=$('#icon').val();
+		var name=$('#name').val();
+		var keywords=$('#keywords').val();
+		var description=$('#description').val();
+		
+		$.post("{:url('system/category')}",{id:id,fid:fid,icon:icon,name:name,keywords:keywords,description:description},function(data){
+			if(data.status==1){
+				layer.alert(data.msg,function(){
+					location.href="{:url('system/category')}";
+				})			
+			}else{
+				layer.alert(data.msg);
+			}
+		})
+	})
+</script>
+<script type="text/javascript" src="__PLUS__/plupload/plupload.full.min.js"></script>
+<script type="text/javascript">
+	var picupurl="{:url('pub/upPic')}"
+	var uploader = new plupload.Uploader({
+		runtimes: 'html5,flash,silverlight,html4', 
+		browse_button: 'upimg',
+		url: picupurl, //远程上传地址
+		flash_swf_url: 'plupload/Moxie.swf',
+		silverlight_xap_url: 'plupload/Moxie.xap', 
+		filters: {
+		    max_file_size: '10mb', 
+		    mime_types: [
+		        {title: "files", extensions: "jpg,png,gif,jpeg"}
+		    ]
+		},
+		multi_selection: false, //true:ctrl多文件上传, false 单文件上传
+		init: {
+		    FilesAdded: function(up, files) { //文件上传前
+		        if ($("#ul_pics").children("li").length > 30) {
+		            alert("您上传的图片太多了！");
+		            uploader.destroy();
+		        } else {
+		            var li = '';
+		            plupload.each(files, function(file) { //遍历文件
+				li += "<li id='" + file['id'] + "'><div class='progress'><span class='bar'></span><span class='percent'>0%</span></div></li>";
+		            });
+		            $("#ul_pics").prepend(li);
+		            uploader.start();
+		        }
+		    },
+		    UploadProgress: function(up, file) { //上传中，显示进度条
+		        var percent = file.percent;
+		        $("#" + file.id).find('.bar').css({"width": percent + "%"});
+		        $("#" + file.id).find(".percent").text(percent + "%");
+		    },
+		    FileUploaded: function(up, file, info) { 
+		        var data = eval("(" + info.response + ")");
+		        $('#icon').val(data.pic);
+		       
+		    },
+		    Error: function(up, err) { //上传出错的时候触发
+		        alert(err.message);
+		    }
+		}
+	});        
+	uploader.init();
+ </script>

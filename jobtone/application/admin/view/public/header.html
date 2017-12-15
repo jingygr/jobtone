@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>周博通-管理后台</title>
+<link href="__CSS__/bootstrap.min.css" rel="stylesheet">
+<link href="__CSS__/nifty.min.css" rel="stylesheet">
+<link href="__PLUGINS__/magic-check/css/magic-check.min.css" rel="stylesheet">
+<script src="__JS__/jquery-2.2.4.min.js"></script>
+<script src="__JS__/bootstrap.min.js"></script>
+<script src="__JS__/nifty.min.js"></script>
+<link href="__PLUGINS__/ionicons/css/ionicons.min.css" rel="stylesheet">
+<script src="__PLUS__/Layer/layer.js"></script>
+<script src="__PLUS__/template.js"></script>
+</head>
+<body>
+	<div id="container" class="effect aside-float aside-bright mainnav-lg">
+		<header id="navbar">
+			<div id="navbar-container" class="boxed">
+				<div class="navbar-header">
+					<a href="index.html" class="navbar-brand"> 
+						<img src="__NIMG__/logo.png" class="brand-icon">
+						<div class="brand-title">
+							<span class="brand-text">周博通</span>
+						</div>
+					</a>
+				</div>
+				<div class="navbar-content clearfix">
+                    <ul class="nav navbar-top-links pull-left">
+                    	<li class="tgl-menu-btn"><a class="mainnav-toggle" href="#">当前位置：</a></li>
+                        <li class="tgl-menu-btn">
+                            <a class="mainnav-toggle" href="#">
+                                {$page_title|default=''}
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-top-links pull-right">
+                        <li>
+                            <a href="{:url('admin/Login/loginout')}" class="">
+                            	退出<i class="ion-log-out mar-lft"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+			</div>
+		</header>
